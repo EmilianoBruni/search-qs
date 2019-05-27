@@ -3,13 +3,13 @@ package Search::QS::Filters;
 use v5.14;
 use Moose;
 
-extends 'Set::Object';
+extends 'Set::Array';
 
 # ABSTRACT: A collection of Search::QS::Filter
 
 sub to_qs() {
     my $s = shift;
-    return join('&', map($_->to_qs, @$s ));
+    return join('&', map($_->to_qs, $s->compact() ));
 }
 
 sub to_sql() {
@@ -43,13 +43,13 @@ sub to_sql() {
 sub as_groups() {
     my $s = shift;
     my (%and, %or, @nogroup);
-    foreach (@$s) {
+    $s->foreach(sub {
         given($_) {
             when (defined $_->andGroup) {push @{$and{$_->andGroup}}, $_}
             when (defined $_->orGroup) {push @{$or{$_->orGroup}}, $_}
             default {push @nogroup, $_}
         }
-    }
+    });
     return { and => \%and, or => \%or, nogroup => \@nogroup};
 }
 

@@ -71,7 +71,7 @@ sub to_sql {
 sub to_qs_name  {
     my $s = shift;
 
-    my $ret = 'fld[' . $s->name;
+    my $ret = 'flt[' . $s->name;
     $ret.=':' . $s->tag if ($s->tag);
     $ret.=']';
 
