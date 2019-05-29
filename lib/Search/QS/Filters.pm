@@ -3,9 +3,35 @@ package Search::QS::Filters;
 use v5.14;
 use Moose;
 
+use feature 'switch';
+
 extends 'Set::Array';
 
 # ABSTRACT: A collection of Search::QS::Filter
+
+sub parse() {
+    my $s       = shift;
+    my $struct  = shift;
+
+
+    while (my ($k,$v) = each $struct) {
+        given($k) {
+			when (/^flt\[(.*?)\]/)   { $s->_parse_filter($1, $v) }
+		}
+    }
+}
+
+sub _parse_filter {
+    my $s   = shift;
+    my $kt  = shift;
+    my $val = shift;
+
+    my ($key, $tag) = split(/:/,$kt);
+
+    my $fltObj = new Search::QS::Filter(name => $key, tag => $tag);
+    $fltObj->parse($val);
+    $s->push($fltObj);
+}
 
 sub to_qs() {
     my $s = shift;
