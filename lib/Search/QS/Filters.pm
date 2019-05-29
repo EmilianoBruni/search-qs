@@ -2,6 +2,7 @@ package Search::QS::Filters;
 
 use v5.14;
 use Moose;
+use Search::QS::Filter;
 
 use feature 'switch';
 

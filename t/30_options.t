@@ -1,46 +1,43 @@
 use Test::More;
-use Tie::IxHash;
-
-#use URL::Encode qw(:all);
-use Data::Dumper;
 use Search::QS;
+use Tie::IxHash;
 
 my $num = 0;
 
-$qs = 'flt[Name]=Foo'; # SQL: (Name = Foo)
-is(convert_url_params_to_filter_and_return($qs), $qs);
+my $sqs = new Search::QS;
+
+isa_ok($sqs->options, 'Search::QS::Options');
 $num++;
 
-my $qs = 'flt[age]=5&flt[age]=9&flt[Name]=Foo';
-is(convert_url_params_to_filter_and_return($qs), $qs);
+is($sqs->options->to_qs , '', "Empty options");
 $num++;
 
-$qs = 'flt[FirstName]=Foo&flt[FirstName]=$or:1&flt[LastName]=Bar&flt[LastName]=$or:1';
-is(convert_url_params_to_filter_and_return($qs), $qs);
-$num++;
 
-$qs ='flt[c:one]=1&flt[c:one]=$and:1&flt[d:one]=2&flt[d:one]=$and:1&'.
-    'flt[c:two]=2&flt[c:two]=$and:2&flt[d:two]=3&flt[d:two]=$op:>&'.
-    'flt[d:two]=$and:2&flt[d:three]=10';
-is(convert_url_params_to_filter_and_return($qs), $qs);
-$num++;
+my $qs = 'start=5';
+&test_qs($qs,"Check start options....");
+#my $struct = url_params_mixed($qs);
+#$sqs->options->parse($struct);
+#is($sqs->options->to_qs, $qs, "Check start options");
+#$num++;
+$qs = 'start=5&limit=8';
+&test_qs($qs,"add limit....");
+$qs = 'start=5&limit=8&sort[name]=asc';
+&test_qs($qs,"add one sort....");
+$qs = 'start=5&limit=8&sort[name]=asc&sort[type]=desc';
+&test_qs($qs,"another sort....");
+
 
 done_testing($num);
 
-sub convert_url_params_to_filter_and_return {
+sub test_qs() {
     my $qs = shift;
+    my $descr = shift;
     my $struct = url_params_mixed($qs);
-    return &to_qs($struct);
+    $sqs->options->parse($struct);
+    is($sqs->options->to_qs, $qs, $descr);
+    $num++;
 }
 
-sub to_qs {
-    my $struct = shift;
-
-    my $filters = new Search::QS->filters;
-    $filters->parse($struct);
-
-    return $filters->to_qs;
-}
 
 # changed from URL::Encode to use Tie::IxHash instead of hash
 
