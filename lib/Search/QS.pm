@@ -8,8 +8,36 @@ use Moose;
 use Search::QS::Filters;
 use Search::QS::Options;
 
-# ABSTRACT: A converter between search query and query string URI
+# ABSTRACT: A converter between query string URI and search query
 
+=head1 SYNOPSIS
+
+  use Search::QS;
+
+  my $qs = new Search::QS;
+  # parse query_string
+  $qs->parse($qs);
+  # reconvert object to query_string
+  print $qs->to_qs;
+
+
+=head1 DESCRIPTION
+
+This module converts a query string like This
+
+  http://www.example.com?flt[Name]=Foo
+
+into perl objects which rappresent a search.
+
+In L<filters()> there are all flt (filter) elements.
+
+In L<options()> there are query options like limit, start and sorting.
+
+=cut
+
+=method filters()
+Return an instance of L<Search::QS::Filters>
+=cut
 has filters => ( is => 'ro', isa => 'Search::QS::Filters',
     default => sub {
         return new Search::QS::Filters;
@@ -17,12 +45,18 @@ has filters => ( is => 'ro', isa => 'Search::QS::Filters',
 );
 
 
+=method options()
+Return an instance of L<Search::QS::Options>
+=cut
 has options => ( is => 'ro', isa => 'Search::QS::Options',
     default => sub {
         return new Search::QS::Options;
     }
 );
 
+=method parse($query_string)
+Parse the $query_string and fills related objects in L<filters()> and L<options()>
+=cut
 sub parse {
     my $s = shift;
     my $v = shift;
@@ -31,6 +65,10 @@ sub parse {
     $s->options->parse($v);
 }
 
+=method to_qs()
+Return a query string which represents current state of L<filters()> and L<options()>
+elements
+=cut
 sub to_qs {
     my $s = shift;
 
