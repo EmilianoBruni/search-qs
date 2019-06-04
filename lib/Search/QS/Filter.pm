@@ -43,7 +43,7 @@ sub to_qs() {
         $ret .= $s->to_qs_name . '=' . $_ . '&';
     }
     # remove last &
-    $ret = substr($ret, 0, length($ret)-1) if (length($ret) > 0);
+    chop($ret) if (length($ret) > 0);
     $ret.= '&' . $s->to_qs_name . '=$op:' . $s->operator if ($s->operator ne '=');
     $ret.= '&' . $s->to_qs_name . '=$and:' . $s->andGroup if ($s->andGroup);
     $ret.= '&' . $s->to_qs_name . '=$or:' . $s->orGroup if ($s->orGroup);

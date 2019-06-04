@@ -56,7 +56,7 @@ sub to_qs() {
     $ret.= 'limit=' . $s->limit . '&' if ($s->limit);
     $ret.= $sort . '&' if ($sort);
 
-    $ret = substr($ret, 0,length($ret)-1);
+    chop($ret);
 
     return $ret;
 }
