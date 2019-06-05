@@ -8,8 +8,29 @@ use feature 'switch';
 
 extends 'Set::Array';
 
-# ABSTRACT: A collection of Search::QS::Filter
+# ABSTRACT: A collection of L<Search::QS::Filter>
 
+=head1 SYNOPSIS
+
+  use Search::QS::Filters;
+
+  my $flts = new Search::QS::Filters;
+  # parse query_string
+  $flts->parse($qs);
+  # reconvert object to query_string
+  print $flts->to_qs;
+
+
+=head1 DESCRIPTION
+
+This object incapsulate multiple filter elements as a collection of
+L<Search::QS::Filter>
+=cut
+
+=method parse($query_string)
+
+Parse a query string and extract filter informations
+=cut
 sub parse() {
     my $s       = shift;
     my $struct  = shift;
@@ -34,11 +55,19 @@ sub _parse_filter {
     $s->push($fltObj);
 }
 
+=method to_qs()
+
+Return a query string of the internal rappresentation of the object
+=cut
 sub to_qs() {
     my $s = shift;
     return join('&', map($_->to_qs, $s->compact() ));
 }
 
+=method to_sql
+
+Return this object as a SQL search
+=cut
 sub to_sql() {
     my $s = shift;
     my $groups = $s->as_groups;
@@ -66,7 +95,28 @@ sub to_sql() {
 
     return $ret;
 }
+=method as_groups()
 
+Return an HASHREF with 3 keys:
+
+=over
+
+=item and
+
+An HASHREF with keys the andGroup keys and elements the filters with the
+same andGroup key
+
+=item or
+
+An HASHREF with keys the orGroup keys and elements the filters with the
+same orGroup key
+
+=item @nogroup
+
+An ARRAYREF with all filters non in a and/or-Group.
+
+=back
+=cut
 sub as_groups() {
     my $s = shift;
     my (%and, %or, @nogroup);

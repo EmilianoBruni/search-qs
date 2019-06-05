@@ -8,6 +8,25 @@ use Moose;
 use Set::Array;
 use Search::QS::Options::Sort;
 
+# ABSTRACT: Options query search like limits, start and sort
+
+=head1 SYNOPSIS
+
+  use Search::QS::Options;
+
+  my $opt = new Search::QS::Options;
+  # parse query_string
+  $opt->parse($qs);
+  # reconvert object to query_string
+  print $opt->to_qs;
+
+
+=head1 DESCRIPTION
+
+This object incapsulate the options of a query.
+
+=cut
+
 has start => ( is => 'rw', isa => 'Int', default => 0);
 has limit => ( is => 'rw', isa => 'Int|Undef');
 has sort  => ( is => 'rw', isa => 'Set::Array', default => sub {
@@ -15,6 +34,24 @@ has sort  => ( is => 'rw', isa => 'Set::Array', default => sub {
     }
 );
 
+=method start()
+
+Set/Get the first record to show
+
+=method limit()
+
+Set/Get the max number of elements to show
+
+=method sort()
+
+An array (L<Set::Array>) of L<Search::QS::Options::Sort> with sort informations
+
+=cut
+
+=method parse($query_string)
+
+Parse a query string and extract options informations
+=cut
 sub parse() {
     my $s       = shift;
     my $struct  = shift;
@@ -47,6 +84,10 @@ sub _parse_sort() {
 }
 
 
+=method to_qs()
+
+Return a query string of the internal rappresentation of the object
+=cut
 sub to_qs() {
     my $s = shift;
     my $sort = join('&', map($_->to_qs, $s->sort->compact() ));
@@ -61,13 +102,16 @@ sub to_qs() {
     return $ret;
 }
 
+=method reset()
+
+Initialize the object with default values
+=cut
 sub reset() {
     my $s = shift;
     $s->sort->clear;
     $s->limit(undef);
     $s->start(0);
 }
-
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

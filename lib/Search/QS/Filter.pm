@@ -35,12 +35,15 @@ has 'andGroup'  => (is => 'rw');
 has 'orGroup'   => (is => 'rw');
 
 =method name()
+
 The field name to search
 
 =method operator()
+
 The operator to use between field and value
 
 =method value()
+
 An ARRAYREF with values to search in field name. It should be expanded with OR
 concatenation. As an example,
 
@@ -55,6 +58,7 @@ and in SQL syntax must be written like
   x=1 or x=2
 
 =method tag()
+
 In field name it can be use ":" to separe field name by a tag. The idea is to
 distinguish different operation with same field name.
 
@@ -112,6 +116,7 @@ sub parse() {
 }
 
 =method to_qs()
+
 Return a query string of the internal rappresentation of the object
 =cut
 sub to_qs() {
@@ -133,6 +138,7 @@ sub to_qs() {
 }
 
 =method to_sql
+
 Return this object as a SQL search
 =cut
 sub to_sql {
