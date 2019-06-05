@@ -111,7 +111,7 @@ same andGroup key
 An HASHREF with keys the orGroup keys and elements the filters with the
 same orGroup key
 
-=item @nogroup
+=item nogroup
 
 An ARRAYREF with all filters non in a and/or-Group.
 

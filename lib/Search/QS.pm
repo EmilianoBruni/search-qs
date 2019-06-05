@@ -29,13 +29,14 @@ This module converts a query string like This
 
 into perl objects which rappresent a search.
 
-In L<filters()> there are all flt (filter) elements.
+In L</"filters()"> there are all flt (filter) elements.
 
-In L<options()> there are query options like limit, start and sorting.
+In L</"options()"> there are query options like limit, start and sorting.
 
 =cut
 
 =method filters()
+
 Return an instance of L<Search::QS::Filters>
 =cut
 has filters => ( is => 'ro', isa => 'Search::QS::Filters',
@@ -46,6 +47,7 @@ has filters => ( is => 'ro', isa => 'Search::QS::Filters',
 
 
 =method options()
+
 Return an instance of L<Search::QS::Options>
 =cut
 has options => ( is => 'ro', isa => 'Search::QS::Options',
@@ -55,7 +57,9 @@ has options => ( is => 'ro', isa => 'Search::QS::Options',
 );
 
 =method parse($query_string)
-Parse the $query_string and fills related objects in L<filters()> and L<options()>
+
+Parse the $query_string and fills related objects in
+L</"filters()"> and L</"options()">
 =cut
 sub parse {
     my $s = shift;
@@ -66,6 +70,7 @@ sub parse {
 }
 
 =method to_qs()
+
 Return a query string which represents current state of L<filters()> and L<options()>
 elements
 =cut

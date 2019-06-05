@@ -23,7 +23,8 @@ search element in an SQL string. Like
 
   fullname = "Joe"
 
-it has a fied L<name()> "fullname", an L<operator()> "=" and a L<value()> "Joe".
+it has a fied L</"name()"> "fullname", an L</"operator()"> "=" and a
+L</"value()"> "Joe".
 
 =cut
 
@@ -86,7 +87,7 @@ is traslated in
 
 =method orGroup()
 
-Like L<andGroup()> but for OR operator
+Like L</"andGroup()"> but for OR operator
 
 =cut
 
