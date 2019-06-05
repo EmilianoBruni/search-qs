@@ -5,6 +5,28 @@ use Moose;
 
 # ABSTRACT: Incapsulation of a single filter element
 
+=head1 SYNOPSIS
+
+  use Search::QS::Filter;
+
+  my $flt = new Search::QS::Filter;
+  # parse query_string
+  $flt->parse($qs);
+  # reconvert object to query_string
+  print $flt->to_qs;
+
+
+=head1 DESCRIPTION
+
+This object incapsulate a single filter element. Think of it about a single
+search element in an SQL string. Like
+
+  fullname = "Joe"
+
+it has a fied L<name()> "fullname", an L<operator()> "=" and a L<value()> "Joe".
+
+=cut
+
 has 'name'      => (is => 'rw');
 has 'operator'  => (is => 'rw', default => '=');
 has 'value'     => (is => 'rw', isa => 'ArrayRef', default => sub { return [] } );
@@ -12,6 +34,62 @@ has 'tag'       => (is => 'rw');
 has 'andGroup'  => (is => 'rw');
 has 'orGroup'   => (is => 'rw');
 
+=method name()
+The field name to search
+
+=method operator()
+The operator to use between field and value
+
+=method value()
+An ARRAYREF with values to search in field name. It should be expanded with OR
+concatenation. As an example,
+
+  fld[x]=1&fld[x]=2
+
+after parsing produce
+
+    name => 'x', values => [1,2]
+
+and in SQL syntax must be written like
+
+  x=1 or x=2
+
+=method tag()
+In field name it can be use ":" to separe field name by a tag. The idea is to
+distinguish different operation with same field name.
+
+As an example
+
+  fld[a:1]=1&fld[a:1]=>&fld[a:2]=5&fld[a:2]=<
+
+must be
+
+  a>1 and a<5
+
+=method andGroup()
+
+If you set a field with $and:$groupvalue you set that this field in a AND group
+with other fields with same $groupvalue
+
+As an example to
+
+  flt[d:1]=9&flt[d:1]=$and:1&flt[c:1]=2&flt[c:1]=$and:1&flt[d:2]=3&flt[d:2]=$and:2&flt[c:2]=1&flt[c:2]=$and:2
+
+is traslated in
+
+( d=9 AND c=2 ) OR ( d=3 and c=1 )
+
+
+=method orGroup()
+
+Like L<andGroup()> but for OR operator
+
+=cut
+
+=method parse($query_string)
+
+Parse a query string and extract filter informations
+=cut
 sub parse() {
     my $s   = shift;
     my $val = shift;
@@ -33,6 +111,9 @@ sub parse() {
     return $s;
 }
 
+=method to_qs()
+Return a query string of the internal rappresentation of the object
+=cut
 sub to_qs() {
     my $s = shift;
 
@@ -40,17 +121,20 @@ sub to_qs() {
     my $ret = '';
 
     foreach (@{$s->value}) {
-        $ret .= $s->to_qs_name . '=' . $_ . '&';
+        $ret .= $s->_to_qs_name . '=' . $_ . '&';
     }
     # remove last &
     chop($ret) if (length($ret) > 0);
-    $ret.= '&' . $s->to_qs_name . '=$op:' . $s->operator if ($s->operator ne '=');
-    $ret.= '&' . $s->to_qs_name . '=$and:' . $s->andGroup if ($s->andGroup);
-    $ret.= '&' . $s->to_qs_name . '=$or:' . $s->orGroup if ($s->orGroup);
+    $ret.= '&' . $s->_to_qs_name . '=$op:' . $s->operator if ($s->operator ne '=');
+    $ret.= '&' . $s->_to_qs_name . '=$and:' . $s->andGroup if ($s->andGroup);
+    $ret.= '&' . $s->_to_qs_name . '=$or:' . $s->orGroup if ($s->orGroup);
 
     return $ret;
 }
 
+=method to_sql
+Return this object as a SQL search
+=cut
 sub to_sql {
     my $s = shift;
 
@@ -68,7 +152,7 @@ sub to_sql {
     return $ret;
 }
 
-sub to_qs_name  {
+sub _to_qs_name  {
     my $s = shift;
 
     my $ret = 'flt[' . $s->name;
