@@ -29,9 +29,9 @@ This module converts a query string like This
 
 into perl objects which rappresent a search.
 
-In L</"filters()"> there are all flt (filter) elements.
+In L</"filters__"> there are all flt (filter) elements.
 
-In L</"options()"> there are query options like limit, start and sorting.
+In L</"options__"> there are query options like limit, start and sorting.
 
 =cut
 
@@ -59,7 +59,7 @@ has options => ( is => 'ro', isa => 'Search::QS::Options',
 =method parse($query_string)
 
 Parse the $query_string and fills related objects in
-L</"filters()"> and L</"options()">
+L</"filters__"> and L</"options__">
 =cut
 sub parse {
     my $s = shift;
@@ -71,7 +71,7 @@ sub parse {
 
 =method to_qs()
 
-Return a query string which represents current state of L<filters()> and L<options()>
+    Return a query string which represents current state of L<filters__> and L<options__>
 elements
 =cut
 sub to_qs {
@@ -89,6 +89,52 @@ sub to_qs {
     return $ret;
 
 }
+
+=head1 Examples
+
+Here some Examples.
+
+=over
+
+=item C<?flt[Name]=Foo>
+
+should be converted into
+
+  Name = 'Foo'
+
+=item C<?flt[Name]=Foo%&flt[Name]=$op:like>
+
+should be converted into
+
+  Name like 'Foo%'
+
+=item C<?flt[age]=5&flt[age]=9&flt[Name]=Foo>
+
+should be converted into
+
+  (age = 5 OR age = 9) AND (Name = Foo)
+
+=item C<?flt[FirstName]=Foo&flt[FirstName]=$or:1&flt[LastName]=Bar&flt[LastName]=$or:1>
+
+should be converted into
+
+  ( (FirstName = Foo) OR (LastName = Bar) )
+
+=item ?flt[c:one]=1&flt[c:one]=$and:1&flt[d:one]=2&flt[d:one]=$and:1&flt[c:two]=2&flt[c:two]=$and:2&flt[d:two]=3&flt[d:two]=$op:>&flt[d:two]=$and:2&flt[d:three]=10
+
+should be converted into
+
+  (d = 10) AND  ( (c = 1) AND (d = 2) )  OR  ( (c = 2) AND (d > 3) )
+
+
+=back
+
+
+=head1 SEE ALSO
+
+L<Seach::QS::Filters>, L<Seach::QS::Filter>, L<Seach::QS::Options>
+
+=cut
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

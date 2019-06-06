@@ -23,8 +23,8 @@ search element in an SQL string. Like
 
   fullname = "Joe"
 
-it has a fied L</"name()"> "fullname", an L</"operator()"> "=" and a
-L</"value()"> "Joe".
+it has a fied L</"name__"> "fullname", an L</"operator__"> "=" and a
+L</"value__"> "Joe".
 
 =cut
 
@@ -65,7 +65,7 @@ distinguish different operation with same field name.
 
 As an example
 
-  fld[a:1]=1&fld[a:1]=>&fld[a:2]=5&fld[a:2]=<
+  fld[a:1]=1&fld[a:1]=$op:>&fld[a:2]=5&fld[a:2]=$op:<
 
 must be
 
@@ -87,7 +87,7 @@ is traslated in
 
 =method orGroup()
 
-Like L</"andGroup()"> but for OR operator
+Like L</"andGroup__"> but for OR operator
 
 =cut
 

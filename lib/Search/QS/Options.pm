@@ -113,6 +113,12 @@ sub reset() {
     $s->start(0);
 }
 
+=head1 SEE ALSO
+
+L<Seach::QS::Options::Sort>
+
+=cut
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 
