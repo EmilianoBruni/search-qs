@@ -16,7 +16,7 @@ use Search::QS::Options;
 
   my $qs = new Search::QS;
   # parse query_string
-  $qs->parse($qs);
+  $qs->parse_qs($qs);
   # reconvert object to query_string
   print $qs->to_qs;
 
@@ -56,10 +56,13 @@ has options => ( is => 'ro', isa => 'Search::QS::Options',
     }
 );
 
-=method parse($query_string)
+=method parse($perl_struct)
 
-Parse the $query_string and fills related objects in
+$perl_struct is an HASHREF which represents a query string like
+the one returned by L<URI::Encode/"url_params_mixed">.
+It parses the $perl_struct and fills related objects in
 L</"filters__"> and L</"options__">
+
 =cut
 sub parse {
     my $s = shift;

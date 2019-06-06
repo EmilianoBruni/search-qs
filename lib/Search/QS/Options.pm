@@ -16,7 +16,7 @@ use Search::QS::Options::Sort;
 
   my $opt = new Search::QS::Options;
   # parse query_string
-  $opt->parse($qs);
+  $opt->parse_qs($qs);
   # reconvert object to query_string
   print $opt->to_qs;
 
@@ -48,9 +48,11 @@ An array (L<Set::Array>) of L<Search::QS::Options::Sort> with sort informations
 
 =cut
 
-=method parse($query_string)
+=method parse($perl_struct)
 
-Parse a query string and extract options informations
+$perl_struct is an HASHREF which represents a query string like
+the one returned by L<URI::Encode/"url_params_mixed">.
+It parses the struct and extract filter informations
 =cut
 sub parse() {
     my $s       = shift;

@@ -11,7 +11,7 @@ use Moose;
 
   my $flt = new Search::QS::Filter;
   # parse query_string
-  $flt->parse($qs);
+  $flt->parse_qs($qs);
   # reconvert object to query_string
   print $flt->to_qs;
 
@@ -91,9 +91,11 @@ Like L</"andGroup__"> but for OR operator
 
 =cut
 
-=method parse($query_string)
+=method parse($perl_struct)
 
-Parse a query string and extract filter informations
+$perl_struct is an HASHREF which represents a query string like
+the one returned by L<URI::Encode/"url_params_mixed">.
+It parses the struct and extract filter informations
 =cut
 sub parse() {
     my $s   = shift;
