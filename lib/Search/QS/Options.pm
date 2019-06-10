@@ -60,7 +60,7 @@ sub parse() {
 
     $s->reset();
 
-    while (my ($k,$v) = each $struct) {
+    while (my ($k,$v) = each %$struct) {
         given($k) {
 			when ('start')   { $s->start($v) }
 			when ('limit')   { $s->limit($v) }
