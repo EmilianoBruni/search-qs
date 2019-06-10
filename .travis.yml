@@ -1,0 +1,16 @@
+language: perl
+perl:
+  - "5.18"
+  - "5.24"
+  - "5.30"
+notifications:
+  email: false
+env:
+  global:
+    - "HARNESS_OPTIONS=j9"
+install:
+  - "cpanm -n --installdeps ."
+
+before_script:
+
+after_script:
