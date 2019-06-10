@@ -38,7 +38,7 @@ sub parse() {
     my $struct  = shift;
 
 
-    while (my ($k,$v) = each $struct) {
+    while (my ($k,$v) = each %$struct) {
         given($k) {
 			when (/^flt\[(.*?)\]/)   { $s->_parse_filter($1, $v) }
 		}
@@ -75,7 +75,7 @@ sub to_sql() {
     my $groups = $s->as_groups;
 
     my $and = '';
-    while (my ($k, $v) = each $groups->{and}) {
+    while (my ($k, $v) = each %{$groups->{and}}) {
         $and .= ' ( ' . join (' AND ', map($_->to_sql, @$v)) . ' ) ';
         $and .= ' OR ';
     }
@@ -83,7 +83,7 @@ sub to_sql() {
     $and = substr($and, 0, length($and)-4) if (length($and) >0);
 
     my $or = '';
-    while (my ($k, $v) = each $groups->{or}) {
+    while (my ($k, $v) = each %{$groups->{or}}) {
         $or .= ' ( ' . join (' OR ', map($_->to_sql, @$v)) . ' ) ';
         $or .= ' AND ';
     }
