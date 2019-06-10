@@ -8,5 +8,3 @@ notifications:
 env:
   global:
     - "HARNESS_OPTIONS=j9"
-install:
-  - "cpanm -n --installdeps ."
